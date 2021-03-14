@@ -55,7 +55,7 @@ int find_divisor(mpz_t divisor, const mpz_t n)
      mpz_clear(i);
      mpz_clear(last_divisor);
      return mpz_cmp_ui(divisor, 1) > 0;
-	}
+     }
       
 int main(int argc, char *argv[])
     {
