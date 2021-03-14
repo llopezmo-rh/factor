@@ -115,8 +115,7 @@ int main(int argc, char *argv[])
     // Loop where factors will be found and printed
     for(;;)
         {
-        find_divisor(divisor, dividend);
-        if (mpz_cmp_ui(divisor, 1) > 0)
+        if (find_divisor(divisor, dividend))
             {
             if (mpz_cmp(previous_divisor, divisor) != 0)
                 {
