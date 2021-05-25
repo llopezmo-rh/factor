@@ -18,6 +18,10 @@
 #include <gmp.h>
 
 
+// Radix of numbers expressed as strings
+#define RADIX 10
+
+
 // find_divisor stores on "divisor" the first divisor of "n" found different to 1.
 // If none is found, it will set "divisor" to 1.
 // It returns 0 (false) if no divisor different to 1 has been found. Otherwise 1.
@@ -87,7 +91,7 @@ int main(int argc, char *argv[])
     setbuf(stdout, NULL);
     
     // Initializing and validating variables
-    if (mpz_init_set_str(dividend, argv[1], 10) == -1)
+    if (mpz_init_set_str(dividend, argv[1], RADIX) == -1)
         {
         fprintf(stderr, "Fatal error: \"%s\" does not seem to be a correct "
             "integer value\n", argv[1]);
@@ -121,7 +125,7 @@ int main(int argc, char *argv[])
                 {
                 if (mpz_cmp_ui(previous_divisor, 0) != 0)
                     {
-                    mpz_get_str(mpz_string, 10, previous_divisor);
+                    mpz_get_str(mpz_string, RADIX, previous_divisor);
                     if (exp == 1)
                         printf("%s * ", mpz_string);
                     else
@@ -138,20 +142,20 @@ int main(int argc, char *argv[])
             {
             if (mpz_cmp(dividend, previous_divisor) == 0)
                 {
-                mpz_get_str(mpz_string, 10, dividend);
+                mpz_get_str(mpz_string, RADIX, dividend);
                 printf("(%s^%llu)", mpz_string, ++exp);
                 }
             else
                 {
                 if (mpz_cmp_ui(previous_divisor, 0) != 0)
                     {       
-                    mpz_get_str(mpz_string, 10, previous_divisor);       
+                    mpz_get_str(mpz_string, RADIX, previous_divisor);       
                     if (exp == 1)
                         printf("%s * ", mpz_string);
                     else
                         printf("(%s^%llu) * ", mpz_string, exp);
                     }
-                mpz_out_str(stdout, 10, dividend);
+                mpz_out_str(stdout, RADIX, dividend);
                 }
             printf("\n");
             // As a prime factor has been found, the loop has to be finished
