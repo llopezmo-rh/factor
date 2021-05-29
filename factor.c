@@ -60,11 +60,27 @@ int find_divisor(mpz_t divisor, const mpz_t n)
      mpz_clear(last_divisor);
      return mpz_cmp_ui(divisor, 1) > 0;
      }
-      
+
+// print_power prints a power with the format "(<base>^<exponent)". If the
+// exponent is 1, it just prints the base  
+void print_power(const mpz_t base, const mpz_t exp)
+    {
+    if (mpz_cmp_ui(exp, 1) == 0)
+        mpz_out_str(stdout, RADIX, base);
+    else
+        {
+        printf("(");
+        mpz_out_str(stdout, RADIX, base);
+        printf("^");
+        mpz_out_str(stdout, RADIX, exp);
+        printf(")");
+        }
+    }
+    
 int main(int argc, char *argv[])
     {
     // Variable to store the exponent to be printed
-    unsigned long long int exp;
+    mpz_t exp;
     
     // Variable to keep the number whose divisor will be searched for. 
     // Initialized to the CLI argument
@@ -81,11 +97,6 @@ int main(int argc, char *argv[])
     // will be overwritten with the one of "divisor" and "exp" will be 
     // reinitialized to 1.
     mpz_t previous_divisor;
-    
-    // This is just a variable to convert mpz_t values to strings to be 
-    // printed. Alternatively, the following function is being used too:
-    // size_t mpz_out_str (FILE *stream, int base, const mpz_t op)
-    char* mpz_string;
     
     // Removing buffer in order to send output to stdout immediately
     setbuf(stdout, NULL);
@@ -109,7 +120,7 @@ int main(int argc, char *argv[])
     // Therefore, it is being initialized on the line below as the CLI 
     // argument. The factors of a number can never be longer than the number 
     // to be factored
-    mpz_string = (char*)malloc(strlen(argv[1]) * sizeof(char));
+    mpz_init(exp);
     mpz_init_set_ui(previous_divisor, 0);
     mpz_init(divisor);
     
@@ -125,38 +136,29 @@ int main(int argc, char *argv[])
                 {
                 if (mpz_cmp_ui(previous_divisor, 0) != 0)
                     {
-                    mpz_get_str(mpz_string, RADIX, previous_divisor);
-                    if (exp == 1)
-                        printf("%s * ", mpz_string);
-                    else
-                        printf("(%s^%llu) * ", mpz_string, exp);
+                    print_power(previous_divisor, exp);
+                    printf(" * ");
                     }
                 mpz_set(previous_divisor, divisor);
-                exp = 1;
+                mpz_set_ui(exp, 1);
                 }
             else
-                exp++;
+                mpz_add_ui(exp, exp, 1);
             mpz_cdiv_q(dividend, dividend, divisor);
             }
         else
             {
             if (mpz_cmp(dividend, previous_divisor) == 0)
-                {
-                mpz_get_str(mpz_string, RADIX, dividend);
-                printf("(%s^%llu)", mpz_string, ++exp);
-                }
+                mpz_add_ui(exp, exp, 1);
             else
                 {
                 if (mpz_cmp_ui(previous_divisor, 0) != 0)
                     {       
-                    mpz_get_str(mpz_string, RADIX, previous_divisor);       
-                    if (exp == 1)
-                        printf("%s * ", mpz_string);
-                    else
-                        printf("(%s^%llu) * ", mpz_string, exp);
+                    print_power(previous_divisor, exp);
+                    printf(" * ");
                     }
-                mpz_out_str(stdout, RADIX, dividend);
                 }
+            print_power(dividend, exp);
             printf("\n");
             // As a prime factor has been found, the loop has to be finished
             break;
