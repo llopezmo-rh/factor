@@ -114,12 +114,8 @@ int main(int argc, char *argv[])
             "factored\n");
         return 1;
         }
-    // According to GNU MP documentation, output strings on mpz_get_str should 
-    // be allocated automatically by the function if it was initilized 
-    // previously to NULL, but according to my tests this is not happening. 
-    // Therefore, it is being initialized on the line below as the CLI 
-    // argument. The factors of a number can never be longer than the number 
-    // to be factored
+    
+    // Initializing
     mpz_init(exp);
     mpz_init_set_ui(previous_divisor, 0);
     mpz_init(divisor);
@@ -148,7 +144,7 @@ int main(int argc, char *argv[])
             }
         else
             {
-            if (mpz_cmp(dividend, previous_divisor) == 0)
+		  if (mpz_cmp(dividend, previous_divisor) == 0)
                 mpz_add_ui(exp, exp, 1);
             else
                 {
@@ -157,6 +153,11 @@ int main(int argc, char *argv[])
                     print_power(previous_divisor, exp);
                     printf(" * ");
                     }
+                // As this dividend is prime and it is different to the 
+			 // previous divisor found, the exponent is set to 1 so 
+			 // that only the number is printed before the loop 
+			 // is finished
+                mpz_set_ui(exp, 1);
                 }
             print_power(dividend, exp);
             printf("\n");
@@ -166,5 +167,3 @@ int main(int argc, char *argv[])
         }
     }
                     
-    
-
