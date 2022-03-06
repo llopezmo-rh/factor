@@ -114,8 +114,11 @@ int main(int argc, char *argv[])
             "factored\n");
         return 1;
         }
+<<<<<<< HEAD
     
     // Initializing
+=======
+>>>>>>> 47adc7f5ee5f4672625f7031d1969e4b809549c2
     mpz_init(exp);
     mpz_init_set_ui(previous_divisor, 0);
     mpz_init(divisor);
